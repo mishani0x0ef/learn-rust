@@ -83,14 +83,10 @@ fn get_fibonacci_with_while(position: u32) -> u64 {
 }
 
 fn get_fibonacci_with_for(position: u32) -> u64 {
-    let mut previous: u64 = 1;
-    let mut current: u64 = 2;
+    let mut previous: u64 = 0;
+    let mut current: u64 = 1;
 
-    if position == 1 {
-        return previous;
-    }
-
-    for _ in 2..position {
+    for _ in 0..position {
         let latest_current = current;
 
         current = previous + current;
