@@ -1,30 +1,28 @@
-use std::path::Path;
+use std::{collections::BTreeSet, path::Path};
 use walkdir::WalkDir;
 
-fn find_all_mentions_of(root: &String, expected_entry: &str) -> Vec<String> {
+fn find_all_mentions_of(root: &String, expected_entries: Vec<&str>) -> Vec<String> {
+    let entries_set: BTreeSet<_> = expected_entries.into_iter().collect();
+
     WalkDir::new(root)
         .into_iter()
         .filter(|entry| entry.is_ok())
         .map(|entry| entry.unwrap())
-        .filter(|entry| entry.file_name() == expected_entry)
+        .filter(|entry| entries_set.contains(entry.file_name().to_str().unwrap()))
         .map(|entry| entry.path().display().to_string())
         .collect()
 }
 
 fn find_all_package_locks(root: &String) -> Vec<String> {
-    find_all_mentions_of(root, "package-lock.json")
+    find_all_mentions_of(root, vec!["package-lock.json"])
 }
 
 fn find_all_node_modules(root: &String) -> Vec<String> {
-    find_all_mentions_of(root, "node_modules")
+    find_all_mentions_of(root, vec!["node_modules"])
 }
 
-// TODO: sub-optimal. Currently too many iterations. Make it a single iteration.
 fn find_all_front_end_junk(root: &String) -> Vec<String> {
-    let mut front_end_items = find_all_package_locks(&root);
-    front_end_items.append(&mut find_all_node_modules(&root));
-
-    front_end_items
+    find_all_mentions_of(root, vec!["node_modules", "package-lock.json"])
 }
 
 // This tests are more like integration tests, but for now I need get into stubs and mock in Rust to change it.
