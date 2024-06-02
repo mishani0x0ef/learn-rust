@@ -22,7 +22,7 @@ fn find_all_node_modules(root: &String) -> Vec<String> {
 }
 
 fn find_all_front_end_junk(root: &String) -> Vec<String> {
-    find_all_mentions_of(root, vec!["node_modules", "package-lock.json"])
+    find_all_mentions_of(root, vec!["node_modules", "package-lock.json", "yarn.lock"])
 }
 
 // This tests are more like integration tests, but for now I need get into stubs and mock in Rust to change it.
