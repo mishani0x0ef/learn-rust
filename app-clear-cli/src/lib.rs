@@ -13,15 +13,7 @@ fn find_all_mentions_of(root: &String, expected_entries: Vec<&str>) -> Vec<Strin
         .collect()
 }
 
-fn find_all_package_locks(root: &String) -> Vec<String> {
-    find_all_mentions_of(root, vec!["package-lock.json"])
-}
-
-fn find_all_node_modules(root: &String) -> Vec<String> {
-    find_all_mentions_of(root, vec!["node_modules"])
-}
-
-fn find_all_front_end_junk(root: &String) -> Vec<String> {
+pub fn find_all_front_end_junk(root: &String) -> Vec<String> {
     find_all_mentions_of(root, vec!["node_modules", "package-lock.json", "yarn.lock"])
 }
 
@@ -30,34 +22,6 @@ fn find_all_front_end_junk(root: &String) -> Vec<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn when_has_lock_files_should_return_all_mentions() {
-        let root = String::from(".");
-        let expected = Path::new(".")
-            .join("test-root")
-            .join("package-lock.json")
-            .display()
-            .to_string();
-
-        let actual = find_all_package_locks(&root);
-
-        assert_eq!(actual, vec![expected]);
-    }
-
-    #[test]
-    fn when_has_node_modules_should_return_all_mentions() {
-        let root = String::from(".");
-        let expected = Path::new(".")
-            .join("test-root")
-            .join("node_modules")
-            .display()
-            .to_string();
-
-        let actual = find_all_node_modules(&root);
-
-        assert_eq!(actual, vec![expected]);
-    }
 
     #[test]
     fn when_js_junk_should_return_all_mentions() {
