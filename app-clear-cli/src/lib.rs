@@ -6,8 +6,7 @@ fn find_all_mentions_of(root: &String, expected_entries: Vec<&str>) -> Vec<Strin
 
     WalkDir::new(root)
         .into_iter()
-        .filter(|entry| entry.is_ok())
-        .map(|entry| entry.unwrap())
+        .filter_map(Result::ok)
         .filter(|entry| entries_set.contains(entry.file_name().to_str().unwrap()))
         .map(|entry| entry.path().display().to_string())
         .collect()
