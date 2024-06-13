@@ -1,3 +1,6 @@
+pub mod config;
+
+use crate::config::Config;
 use std::{collections::BTreeSet, fs, path::Path};
 use walkdir::WalkDir;
 
@@ -32,11 +35,11 @@ fn find_all_mentions_of(root: &String, expected_entries: Vec<&str>) -> Vec<Strin
         .collect()
 }
 
-pub fn find_all_front_end_junk(root: &String) -> Vec<String> {
+fn find_all_front_end_junk(root: &String) -> Vec<String> {
     find_all_mentions_of(root, vec!["node_modules", "package-lock.json", "yarn.lock"])
 }
 
-pub fn delete_all(paths: Vec<String>) -> Vec<DeletionResult> {
+fn delete_all(paths: Vec<String>) -> Vec<DeletionResult> {
     paths
         .iter()
         .map(|path| Path::new(path))
@@ -57,6 +60,26 @@ pub fn delete_all(paths: Vec<String>) -> Vec<DeletionResult> {
             }
         })
         .collect()
+}
+
+pub fn run(config: Config) -> Result<(), &'static str> {
+    let items_to_clean = find_all_front_end_junk(&config.path);
+
+    if items_to_clean.len() < 1 {
+        return Err("No items to clean. Skipping cleanup process.");
+    }
+
+    println!(
+        "Found {} items to clean: {:?}",
+        items_to_clean.len(),
+        items_to_clean
+    );
+
+    delete_all(items_to_clean);
+
+    println!("Cleanup was successfully completed!");
+
+    Ok(())
 }
 
 // This tests are more like integration tests, but for now I need get into stubs and mock in Rust to change it.

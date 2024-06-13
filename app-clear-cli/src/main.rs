@@ -1,7 +1,5 @@
-mod config;
-
-use crate::config::Config;
-use app_clear_cli::{delete_all, find_all_front_end_junk};
+use app_clear_cli::config::Config;
+use app_clear_cli::run;
 use std::{env, process::exit};
 
 fn main() {
@@ -17,20 +15,10 @@ fn main() {
         }
     };
 
-    let items_to_clean = find_all_front_end_junk(&config.path);
-
-    if items_to_clean.len() < 1 {
-        println!("No items to clean. Skipping cleanup process.");
-        exit(0);
+    if let Err(err) = run(config) {
+        eprintln!("Error occurred during parsing args: {err}");
+        exit(1);
     }
-
-    println!(
-        "Found {} items to clean: {:?}",
-        items_to_clean.len(),
-        items_to_clean
-    );
-
-    delete_all(items_to_clean);
 
     println!("Cleanup was successfully completed!");
 }
