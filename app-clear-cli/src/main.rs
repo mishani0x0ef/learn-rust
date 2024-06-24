@@ -5,15 +5,10 @@ use std::{env, process::exit};
 fn main() {
     println!("Start cleanup process");
 
-    let args: Vec<String> = env::args().collect();
-
-    let config = match Config::from_args(&args) {
-        Ok(config) => config,
-        Err(err) => {
-            eprintln!("Error occurred during parsing args: {err}");
-            exit(1);
-        }
-    };
+    let config = Config::from_args(env::args()).unwrap_or_else(|err| {
+        eprintln!("Error occurred during parsing args: {err}");
+        exit(1);
+    });
 
     if let Err(err) = run(config) {
         eprintln!("Error occurred during parsing args: {err}");
